@@ -186,7 +186,7 @@
             border: none;
             background: #ffffff;
             color: #000;
-            font-size: 28px;
+            font-size: 26px;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
@@ -197,7 +197,6 @@
             padding: 0;
             line-height: 1;
             text-align: center;
-            text-indent: 3px;
             position: relative;
             -webkit-appearance: none;
             appearance: none;
@@ -212,10 +211,6 @@
 
         .play-btn:active {
             transform: scale(0.95);
-        }
-
-        .play-btn.playing-btn {
-            text-indent: 0;
         }
 
         /* ===== انیمیشن نبض خیلی ملایم ===== */
@@ -296,8 +291,7 @@
             .play-btn {
                 width: 56px;
                 height: 56px;
-                font-size: 24px;
-                text-indent: 2px;
+                font-size: 22px;
             }
         }
     </style>
@@ -369,13 +363,11 @@
             if (isPlaying) {
                 audio.pause();
                 playBtn.textContent = '▶';
-                playBtn.classList.remove('playing-btn');
                 card.classList.remove('playing');
                 playBtn.classList.remove('pulse');
             } else {
                 audio.play().catch(() => { });
-                playBtn.textContent = '❚❚';  // ← تغییر اینجا: به جای ⏸ از ❚❚ استفاده شده
-                playBtn.classList.add('playing-btn');
+                playBtn.textContent = '| |';  // ← نازک‌ترین حالت
                 card.classList.add('playing');
                 playBtn.classList.add('pulse');
             }
@@ -401,7 +393,6 @@
         // ===== پایان آهنگ =====
         audio.addEventListener('ended', () => {
             playBtn.textContent = '▶';
-            playBtn.classList.remove('playing-btn');
             card.classList.remove('playing');
             playBtn.classList.remove('pulse');
             isPlaying = false;
