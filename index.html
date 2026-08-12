@@ -169,14 +169,11 @@
             }
         }
 
-        /* ===== دکمه پخش - حل مشکل گوشی ===== */
+        /* ===== دکمه پخش - با div به جای button ===== */
         .play-btn {
-            -webkit-appearance: none;
-            appearance: none;
             width: 70px;
             height: 70px;
             border-radius: 50%;
-            border: none;
             background: linear-gradient(135deg, #f5a623, #e08e0b);
             color: #000;
             font-size: 30px;
@@ -190,10 +187,10 @@
             padding: 0;
             line-height: 1;
             text-align: center;
-            text-indent: 4px;
-            position: relative;
-            outline: none;
+            user-select: none;
+            -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
         }
 
         .play-btn:hover {
@@ -203,10 +200,6 @@
 
         .play-btn:active {
             transform: scale(0.95);
-        }
-
-        .play-btn.playing-btn {
-            text-indent: 0;
         }
 
         /* ===== انیمیشن نبض ===== */
@@ -274,7 +267,6 @@
                 width: 60px;
                 height: 60px;
                 font-size: 26px;
-                text-indent: 3px;
             }
         }
     </style>
@@ -302,8 +294,8 @@
         <!-- ===== پخش‌کننده ===== -->
         <div class="player">
 
-            <!-- دکمه پخش -->
-            <button class="play-btn" id="playBtn">▶</button>
+            <!-- دکمه پخش با div به جای button -->
+            <div class="play-btn" id="playBtn">▶</div>
 
             <!-- نوار زمان -->
             <div class="progress-container">
@@ -346,13 +338,11 @@
             if (isPlaying) {
                 audio.pause();
                 playBtn.textContent = '▶';
-                playBtn.classList.remove('playing-btn');
                 card.classList.remove('playing');
                 playBtn.classList.remove('pulse');
             } else {
                 audio.play().catch(() => {});
                 playBtn.textContent = '⏸';
-                playBtn.classList.add('playing-btn');
                 card.classList.add('playing');
                 playBtn.classList.add('pulse');
             }
@@ -378,7 +368,6 @@
         // ===== پایان آهنگ =====
         audio.addEventListener('ended', () => {
             playBtn.textContent = '▶';
-            playBtn.classList.remove('playing-btn');
             card.classList.remove('playing');
             playBtn.classList.remove('pulse');
             isPlaying = false;
