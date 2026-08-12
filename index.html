@@ -236,8 +236,6 @@
             align-items: center;
             gap: 10px;
             margin-top: 4px;
-            padding: 8px 0;
-            /* برای راحت‌تر شدن لمس */
         }
 
         .progress-container span {
@@ -250,23 +248,16 @@
 
         .progress-bar {
             flex: 1;
-            height: 4px;
+            height: 3px;
             border-radius: 10px;
             background: rgba(255, 255, 255, 0.15);
             cursor: pointer;
             position: relative;
             transition: height 0.2s ease;
-            touch-action: none;
-            /* جلوگیری از اسکرول صفحه هنگام کشیدن */
         }
 
         .progress-bar:hover {
-            height: 6px;
-        }
-
-        /* وقتی کاربر داره می‌کشه، نوار بزرگتر میشه */
-        .progress-bar.dragging {
-            height: 8px;
+            height: 5px;
         }
 
         .progress-fill {
@@ -274,29 +265,7 @@
             width: 0%;
             border-radius: 10px;
             background: #ffffff;
-            transition: width 0.05s linear;
-            pointer-events: none;
-        }
-
-        /* ===== دایره کوچک روی نوار (thumb) ===== */
-        .progress-thumb {
-            position: absolute;
-            top: 50%;
-            right: 0;
-            transform: translate(50%, -50%);
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #ffffff;
-            box-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            pointer-events: none;
-        }
-
-        .progress-bar:hover .progress-thumb,
-        .progress-bar.dragging .progress-thumb {
-            opacity: 1;
+            transition: width 0.1s linear;
         }
 
         /* ===== افکت نور هنگام پخش ===== */
@@ -323,12 +292,6 @@
                 width: 56px;
                 height: 56px;
                 font-size: 22px;
-            }
-
-            .progress-thumb {
-                width: 18px;
-                height: 18px;
-                opacity: 1;
             }
         }
     </style>
@@ -359,12 +322,11 @@
             <!-- دکمه پخش -->
             <button class="play-btn" id="playBtn">▶</button>
 
-            <!-- نوار زمان با قابلیت کشیدن -->
+            <!-- نوار زمان -->
             <div class="progress-container">
                 <span id="currentTime">0:00</span>
                 <div class="progress-bar" id="progressBar">
                     <div class="progress-fill" id="progressFill"></div>
-                    <div class="progress-thumb" id="progressThumb"></div>
                 </div>
                 <span id="duration">0:00</span>
             </div>
@@ -385,13 +347,11 @@
         const playBtn = document.getElementById('playBtn');
         const progressFill = document.getElementById('progressFill');
         const progressBar = document.getElementById('progressBar');
-        const progressThumb = document.getElementById('progressThumb');
         const currentTimeEl = document.getElementById('currentTime');
         const durationEl = document.getElementById('duration');
         const card = document.getElementById('playerCard');
 
         let isPlaying = false;
-        let isDragging = false;
 
         // ===== بارگذاری اولیه =====
         audio.addEventListener('loadedmetadata', () => {
@@ -406,8 +366,8 @@
                 card.classList.remove('playing');
                 playBtn.classList.remove('pulse');
             } else {
-                audio.play().catch(() => {});
-                playBtn.textContent = '| |';
+                audio.play().catch(() => { });
+                playBtn.textContent = '| |';  // ← نازک‌ترین حالت
                 card.classList.add('playing');
                 playBtn.classList.add('pulse');
             }
@@ -416,83 +376,18 @@
 
         // ===== به‌روزرسانی نوار زمان =====
         audio.addEventListener('timeupdate', () => {
-            if (!isDragging) {
-                updateProgress();
-            }
-        });
-
-        function updateProgress() {
             const percent = (audio.currentTime / audio.duration) * 100;
             progressFill.style.width = percent + '%';
-            progressThumb.style.left = percent + '%';
             currentTimeEl.textContent = formatTime(audio.currentTime);
-        }
-
-        // =============================================
-        // ===== قابلیت کشیدن روی نوار زمان (Drag) =====
-        // =============================================
-
-        function getPercent(e) {
-            const rect = progressBar.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            let percent = (clientX - rect.left) / rect.width;
-            percent = Math.max(0, Math.min(1, percent));
-            return percent;
-        }
-
-        function setProgress(e) {
-            const percent = getPercent(e);
-            progressFill.style.width = percent * 100 + '%';
-            progressThumb.style.left = percent * 100 + '%';
-            audio.currentTime = percent * audio.duration;
-            currentTimeEl.textContent = formatTime(audio.currentTime);
-        }
-
-        // ===== رویدادهای ماوس (کامپیوتر) =====
-        progressBar.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            progressBar.classList.add('dragging');
-            setProgress(e);
         });
 
-        document.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                setProgress(e);
-            }
-        });
-
-        document.addEventListener('mouseup', () => {
-            if (isDragging) {
-                isDragging = false;
-                progressBar.classList.remove('dragging');
-            }
-        });
-
-        // ===== رویدادهای لمسی (گوشی) =====
-        progressBar.addEventListener('touchstart', (e) => {
-            isDragging = true;
-            progressBar.classList.add('dragging');
-            setProgress(e);
-        }, { passive: true });
-
-        progressBar.addEventListener('touchmove', (e) => {
-            if (isDragging) {
-                setProgress(e);
-            }
-        }, { passive: true });
-
-        progressBar.addEventListener('touchend', () => {
-            if (isDragging) {
-                isDragging = false;
-                progressBar.classList.remove('dragging');
-            }
-        }, { passive: true });
-
-        // ===== کلیک معمولی روی نوار (بدون کشیدن) =====
+        // ===== کلیک روی نوار زمان =====
         progressBar.addEventListener('click', (e) => {
-            if (!isDragging) {
-                setProgress(e);
-            }
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const width = rect.width;
+            const percent = clickX / width;
+            audio.currentTime = percent * audio.duration;
         });
 
         // ===== پایان آهنگ =====
@@ -502,7 +397,6 @@
             playBtn.classList.remove('pulse');
             isPlaying = false;
             progressFill.style.width = '0%';
-            progressThumb.style.left = '0%';
             currentTimeEl.textContent = '0:00';
         });
 
