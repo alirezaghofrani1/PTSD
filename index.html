@@ -169,14 +169,15 @@
             }
         }
 
-        /* ===== دکمه پخش - با div به جای button ===== */
+        /* ===== دکمه پخش ===== */
         .play-btn {
             width: 70px;
             height: 70px;
             border-radius: 50%;
             background: linear-gradient(135deg, #f5a623, #e08e0b);
             color: #000;
-            font-size: 30px;
+            font-size: 28px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 8px 25px rgba(245, 166, 35, 0.35);
@@ -191,6 +192,7 @@
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
             -webkit-touch-callout: none;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         .play-btn:hover {
@@ -266,7 +268,7 @@
             .play-btn {
                 width: 60px;
                 height: 60px;
-                font-size: 26px;
+                font-size: 24px;
             }
         }
     </style>
@@ -294,7 +296,7 @@
         <!-- ===== پخش‌کننده ===== -->
         <div class="player">
 
-            <!-- دکمه پخش با div به جای button -->
+            <!-- دکمه پخش -->
             <div class="play-btn" id="playBtn">▶</div>
 
             <!-- نوار زمان -->
@@ -342,7 +344,7 @@
                 playBtn.classList.remove('pulse');
             } else {
                 audio.play().catch(() => {});
-                playBtn.textContent = '⏸';
+                playBtn.textContent = '❚❚';
                 card.classList.add('playing');
                 playBtn.classList.add('pulse');
             }
