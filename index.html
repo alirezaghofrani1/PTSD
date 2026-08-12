@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="fa">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTSD - Nemzzz</title>
+
+    <style>
+        /* ===== تنظیمات کلی ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0a0a0a;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* ===== پس‌زمینه بلور ===== */
+        .blur-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('cover.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: blur(25px) brightness(0.4);
+            transform: scale(1.1);
+            z-index: 0;
+            animation: bgFade 1.5s ease forwards;
+        }
+
+        @keyframes bgFade {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* ===== کارت اصلی ===== */
+        .card {
+            position: relative;
+            z-index: 1;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 28px;
+            padding: 30px 25px 30px;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            transform: translateY(40px) scale(0.96);
+            animation: cardSlideUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation-delay: 0.2s;
+        }
+
+        @keyframes cardSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(40px) scale(0.96);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ===== کاور آهنگ ===== */
+        .cover-wrapper {
+            opacity: 0;
+            transform: scale(0.92);
+            animation: coverZoom 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes coverZoom {
+            0% {
+                opacity: 0;
+                transform: scale(0.92);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .cover-wrapper img {
+            width: 100%;
+            max-width: 320px;
+            aspect-ratio: 1/1;
+            border-radius: 18px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            display: block;
+            margin: 0 auto;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .cover-wrapper img:hover {
+            transform: scale(1.01);
+        }
+
+        /* ===== اطلاعات آهنگ ===== */
+        .song-info {
+            margin-top: 18px;
+            margin-bottom: 16px;
+            opacity: 0;
+            transform: translateY(15px);
+            animation: fadeUp 0.8s ease forwards;
+            animation-delay: 0.8s;
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .song-info h1 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .song-info p {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 400;
+            margin-top: 4px;
+            letter-spacing: 0px;
+        }
+
+        /* ===== پخش‌کننده ===== */
+        .player {
+            margin-top: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: playerSlideUp 0.9s ease forwards;
+            animation-delay: 1s;
+        }
+
+        @keyframes playerSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== دکمه پخش ===== */
+        .play-btn {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: none;
+            background: #ffffff;
+            color: #000;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 8px 0 14px;
+            padding: 0;
+            line-height: 1;
+            text-align: center;
+            text-indent: 3px;
+            position: relative;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 30px rgba(255, 255, 255, 0.25);
+        }
+
+        .play-btn:active {
+            transform: scale(0.95);
+        }
+
+        .play-btn.playing-btn {
+            text-indent: 0;
+        }
+
+        /* ===== انیمیشن نبض خیلی ملایم ===== */
+        .play-btn.pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+            }
+
+            50% {
+                box-shadow: 0 4px 35px rgba(255, 255, 255, 0.3);
+            }
+        }
+
+        /* ===== نوار زمان ===== */
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .progress-container span {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 11px;
+            font-weight: 400;
+            min-width: 36px;
+            letter-spacing: 0.3px;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 3px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            position: relative;
+            transition: height 0.2s ease;
+        }
+
+        .progress-bar:hover {
+            height: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 10px;
+            background: #ffffff;
+            transition: width 0.1s linear;
+        }
+
+        /* ===== افکت نور هنگام پخش ===== */
+        .playing .cover-wrapper img {
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.05), 0 15px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        /* ===== ریسپانسیو ===== */
+        @media (max-width: 480px) {
+            .card {
+                padding: 20px 15px 22px;
+                border-radius: 22px;
+            }
+
+            .song-info h1 {
+                font-size: 19px;
+            }
+
+            .song-info p {
+                font-size: 13px;
+            }
+
+            .play-btn {
+                width: 56px;
+                height: 56px;
+                font-size: 24px;
+                text-indent: 2px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== پس‌زمینه بلور ===== -->
+    <div class="blur-bg"></div>
+
+    <!-- ===== کارت اصلی ===== -->
+    <div class="card" id="playerCard">
+
+        <!-- ===== کاور آهنگ ===== -->
+        <div class="cover-wrapper">
+            <img src="cover.jpg" alt="PTSD - Nemzzz Cover">
+        </div>
+
+        <!-- ===== اطلاعات آهنگ ===== -->
+        <div class="song-info">
+            <h1>PTSD</h1>
+            <p>Nemzzz</p>
+        </div>
+
+        <!-- ===== پخش‌کننده ===== -->
+        <div class="player">
+
+            <!-- دکمه پخش -->
+            <button class="play-btn" id="playBtn">▶</button>
+
+            <!-- نوار زمان -->
+            <div class="progress-container">
+                <span id="currentTime">0:00</span>
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span id="duration">0:00</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===== فایل صوتی ===== -->
+    <audio id="audio" preload="metadata">
+        <source src="PTSD   Nemzzz.m4a" type="audio/mp4">
+        مرورگر شما از پخش این فایل پشتیبانی نمی‌کند.
+    </audio>
+
+    <!-- ===== کد جاوااسکریپت ===== -->
+    <script>
+        const audio = document.getElementById('audio');
+        const playBtn = document.getElementById('playBtn');
+        const progressFill = document.getElementById('progressFill');
+        const progressBar = document.getElementById('progressBar');
+        const currentTimeEl = document.getElementById('currentTime');
+        const durationEl = document.getElementById('duration');
+        const card = document.getElementById('playerCard');
+
+        let isPlaying = false;
+
+        // ===== بارگذاری اولیه =====
+        audio.addEventListener('loadedmetadata', () => {
+            durationEl.textContent = formatTime(audio.duration);
+        });
+
+        // ===== دکمه پخش/مکث =====
+        playBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                audio.pause();
+                playBtn.textContent = '▶';
+                playBtn.classList.remove('playing-btn');
+                card.classList.remove('playing');
+                playBtn.classList.remove('pulse');
+            } else {
+                audio.play().catch(() => { });
+                playBtn.textContent = '⏸';
+                playBtn.classList.add('playing-btn');
+                card.classList.add('playing');
+                playBtn.classList.add('pulse');
+            }
+            isPlaying = !isPlaying;
+        });
+
+        // ===== به‌روزرسانی نوار زمان =====
+        audio.addEventListener('timeupdate', () => {
+            const percent = (audio.currentTime / audio.duration) * 100;
+            progressFill.style.width = percent + '%';
+            currentTimeEl.textContent = formatTime(audio.currentTime);
+        });
+
+        // ===== کلیک روی نوار زمان =====
+        progressBar.addEventListener('click', (e) => {
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const width = rect.width;
+            const percent = clickX / width;
+            audio.currentTime = percent * audio.duration;
+        });
+
+        // ===== پایان آهنگ =====
+        audio.addEventListener('ended', () => {
+            playBtn.textContent = '▶';
+            playBtn.classList.remove('playing-btn');
+            card.classList.remove('playing');
+            playBtn.classList.remove('pulse');
+            isPlaying = false;
+            progressFill.style.width = '0%';
+            currentTimeEl.textContent = '0:00';
+        });
+
+        // ===== فرمت زمان =====
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return mins + ':' + (secs < 10 ? '0' : '') + secs;
+        }
+
+        // ===== دابل کلیک روی کارت =====
+        card.addEventListener('dblclick', () => {
+            playBtn.click();
+        });
+
+        console.log('🎵 PTSD - Nemzzz | Ready to play!');
+    </script>
+
+</body>
+
+</html>
