@@ -605,7 +605,7 @@
             currentIndex = index;
             loadSong(index);
             audio.play().catch(() => { });
-            playBtn.textContent = '⏸';
+            playBtn.textContent = '| |';
             playBtn.classList.add('playing-btn', 'pulse');
             card.classList.add('playing');
             isPlaying = true;
@@ -632,7 +632,7 @@
                 card.classList.remove('playing');
             } else {
                 audio.play().catch(() => { });
-                playBtn.textContent = '⏸';
+                playBtn.textContent = '| |';
                 playBtn.classList.add('playing-btn', 'pulse');
                 card.classList.add('playing');
             }
